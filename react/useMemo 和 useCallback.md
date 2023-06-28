@@ -6,6 +6,7 @@
 
 #### 当依赖数组中的任意一个值发生变化时，`useCallback` 会返回一个新的回调函数，否则会直接返回之前缓存的回调函数。`useCallback` 适用于那些需要传递给子组件的回调函数，可以避免不必要的重复渲染。
 
+### 例子
 
 ```tsx
 
@@ -22,6 +23,8 @@ const handleSubmit = useCallBack(() => {
     
 ```
 
+------
+
 # `useMemo`
 
 #### React的一个hooks方法，是用来缓存计算结果的 Hook
@@ -33,3 +36,24 @@ const handleSubmit = useCallBack(() => {
 ------
 
 #### `useCallback` 和 `useMemo`区别在于：useMemo 返回的是计算结果，而 `useCallback` 返回的是 `memoized` 回调函数。`useMemo` 适用于那些需要进行复杂计算的场景，`useCallback` 适用于那些需要传递给子组件的回调函数。
+
+
+#### `useMemo` 在某些情况下可用像`useCallback`的用法一样。
+
+```tsx
+// const start = performance.now()
+
+const [newId, updateData] = useMemo(() => {
+  return [
+    state + 1,
+    async () => {
+      await api('url', { state })
+    }
+  ]
+  
+}, [id])
+
+// const end = performance.now()
+```
+
+
