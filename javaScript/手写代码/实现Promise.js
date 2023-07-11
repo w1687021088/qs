@@ -167,21 +167,25 @@ let id = 0
 
             let count = 0;
 
-            promises.forEach((item, index) => {
+            promises.forEach((promise, index) => {
 
                 // 判断是否 Promise
-                if (item instanceof CustomPromise) {
-                    item.then(res => {
-                        results[index] = res
-                        count++
+                if (promise instanceof CustomPromise) {
+                    promise.then(res => {
+                        results[index] = res;
+
+                        count++;
+
                         if (count === promises.length) {
-                            resolve(results)
+                            resolve(results);
                         }
+
                     }, reject);
                 } else {
                     count++;
+
                     // 否则返回自身
-                    results[index] = item;
+                    results[index] = promise;
                 }
             });
         });
