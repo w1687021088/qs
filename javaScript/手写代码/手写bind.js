@@ -20,6 +20,8 @@ const run = data.run.bind(data01, '33')
 run('p1', 'p2')
 
 Function.prototype._bind = function (context, ...args) {
+  context = ((context === undefined || context === null) && window) || Object(context)
+
   // 实现原理很简单，基本和 call 一致
   // 区别在于不立即执行，返回一个函数
   // 并且绑定时的函数参数优先级最高

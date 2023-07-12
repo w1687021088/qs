@@ -7,6 +7,8 @@
  * */
 
 Function.prototype._call = function (context, ...args) {
+  context = ((context === undefined || context === null) && window) || Object(context)
+
   // 创建一个Symbol变量，防止属性重复
   const symbol = Symbol()
 
