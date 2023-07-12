@@ -172,6 +172,13 @@ class CustomPromise {
     return new CustomPromise(resolve => resolve(value))
   }
 
+  /**
+   *
+   * 全部执行，只有全部执行后才返回最终结果。
+   *
+   *
+   *
+   * */
   static all(promises) {
     return new CustomPromise((resolve, reject) => {
       const results = []
@@ -195,11 +202,20 @@ class CustomPromise {
 
           // 否则返回自身
           results[index] = promise
+
+          if (count === promises.length) {
+            resolve(results)
+          }
         }
       })
     })
   }
 
+  /**
+   *
+   * 最先执行完成返回。
+   *
+   * */
   static race(promises) {
     return new CustomPromise((resolve, reject) => {
       promises.forEach(promise => {
@@ -220,7 +236,7 @@ class CustomPromise {
  * 重点 then 思路：
  *  每次执行 then 都返回一个 Promise。
  *  异步模拟微任务采用 setTimeout 方法模拟。
- *  链路执行时，将下一个 then 回调函数存储起来，等待 状态变更为 'fulfilled' | 'rejected' 时在一起清空队列。
+ *  链路执行时，如果时等待状态下，将下一个then回调函数存储起来，一直到状态变更为 'fulfilled' | 'rejected' 时再一起清空回调队列（fulfilled回调 或者 rejected回调）。
  *
  * 静态方法：
  *  模拟 Promise 每次都返回一个 Promise 实例。
