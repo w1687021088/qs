@@ -67,7 +67,13 @@ class CustomPromise {
     }
   }
 
-  // 链路
+  /**
+   *
+   * 链路
+   *
+   * onfulfilled, onrejected 回调不会立即执行，需要等上一个链路执行完毕后才执行。
+   *
+   * */
   then(onfulfilled, onrejected) {
     const wrapper = handleExecutor => {
       onfulfilled = typeof onfulfilled === 'function' ? onfulfilled : result => result
@@ -127,12 +133,24 @@ class CustomPromise {
 
   /**
    *
-   * 捕获错误, 需要等待前面的链路执行完成
+   * 捕获错误
+   *
+   * 延用then思路，等待上一个链路执行完成在执行回调。
+   *
    * */
   catch(rejected) {
     return this.then(undefined, rejected)
   }
 
+  /**
+   *
+   * finally
+   *
+   * 延用then思路，等待上一个链路执行完成在执行回调。
+   *
+   * 并在执行结束之后将上一个链路的结果传递到下一个链路。
+   *
+   * */
   finally(callBack) {
     return this.then(
       value => {
