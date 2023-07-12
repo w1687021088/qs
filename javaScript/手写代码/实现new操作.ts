@@ -4,7 +4,6 @@
  *
  * */
 
-
 /**
  *
  * 在javaScript 中 new 操作符干了什么事？
@@ -19,42 +18,36 @@
  *
  * */
 
-
 // 现实中 通过 new操作符创建对象
 function Foo(name: string) {
   this.name = name
 }
 
-
 const _object = new Foo('张张')
 
-
-console.log(_object); // {name: "张张"}
-
+console.log(_object) // {name: "张张"}
 
 // 模拟new操作符
 
 // 创建构造函数
 
 function Fc(name: string) {
-  this.name  = name
+  this.name = name
 }
 
 Fc.prototype.getName = function () {
   return `name: ${this.name}`
 }
 
-
 // 模拟 new 操作
 function _new(
   // 接收构造函数
   fc: (name: string) => void,
   // 构造函数参数
-  ...args) {
-
+  ...args
+) {
   // 创建新对象
   const _newObject = Object.create(fc.prototype)
-
 
   // 将 构造函数指向 新对象
   const values = fc.apply(_newObject, args)
@@ -64,6 +57,6 @@ function _new(
 
 const _obj = _new(Fc, '张张')
 
-console.log(_obj.name); // '张张'
+console.log(_obj.name) // '张张'
 
-console.log(_obj.getName); // name: '张张'
+console.log(_obj.getName) // name: '张张'

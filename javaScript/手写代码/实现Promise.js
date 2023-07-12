@@ -6,204 +6,194 @@
  * @typedef { (resolve: (value: any) => void, reject: (value: any) => void) => void } Executor
  * */
 
-let id = 0
+class CustomPromise {
+  /**
+   *
+   * @param {Executor} executor
+   *
+   * */
+  constructor(executor) {
+    /**
+     *
+     * 自定义 Promise 状态
+     *
+     * @type State
+     * */
+    this.state = 'pending'
 
- class CustomPromise {
+    // 更新状态结果
+    this.value = undefined
 
     /**
      *
-     * @param {Executor} executor
+     * @type {Array<{ fulfilled: (value: any) => void; rejected: (value: any) => void }>}
+     * */
+    this.callBacks = []
+
+    /**
+     *
+     * 更新状态回调函数
+     *
+     * 只有在状态是pending
+     *
+     * @param {'fulfilled' | 'rejected'} state
+     *
+     * @param {any} value
      *
      * */
-    constructor(executor) {
-        /**
-         *
-         * 自定义 Promise 状态
-         *
-         * @type State
-         * */
-        this.state = 'pending';
+    const updateStateCallback = (state, value) => {
+      if (this.state === 'pending') {
+        // 更新状态
+        this.state = state
 
-        // 更新状态结果
-        this.value = undefined;
+        // 更新回调结果
+        this.value = value
 
+        // 清空等待队列
+        this.callBacks.forEach(callback => {
+          // 当前的value传递到下一个链
+          callback[state]?.(value)
+        })
+      }
+    }
 
-        /**
-         *
-         * @type {Array<{ fulfilled: (value: any) => void; rejected: (value: any) => void }>}
-         * */
-        this.callBacks = [];
+    // 被拒回调
+    const reject = value => updateStateCallback('rejected', value)
 
-        id++;
+    try {
+      executor(value => updateStateCallback('fulfilled', value), reject)
+    } catch (e) {
+      reject(e)
+    }
+  }
 
-        this.id = id;
+  // 链路
+  then(onfulfilled, onrejected) {
+    const wrapper = handleExecutor => {
+      onfulfilled = typeof onfulfilled === 'function' ? onfulfilled : result => result
 
-
-        /**
-         *
-         * 更新状态回调函数
-         *
-         * 只有在状态为 'pending'
-         *
-         * @param {'fulfilled' | 'rejected'} state
-         *
-         * @param {any} value
-         *
-         * */
-        const updateStateCallback = (state, value) => {
-            if (this.state === 'pending') {
-                // 更新状态
-                this.state = state;
-
-                // 更新回调结果
-                this.value = value;
-
-                // 清空等待队列
-                this.callBacks.forEach(callback => {
-                    // 当前的value传递到下一个链
-                    callback[state]?.(value);
-
-                });
+      onrejected =
+        typeof onrejected === 'function'
+          ? onrejected
+          : error => {
+              /**
+               *
+               * 这里 throw 的原因是模拟 Promise.then不传递第二参数的效果。将会在链路的下一个 catch 阶段被捕获（前提是有调用catch，并且在catch之前不会有其他的then 第二参数参与捕获错误）。
+               *
+               * */
+              throw error
             }
-        };
 
-        // 被拒回调
-        const reject = value => updateStateCallback('rejected', value);
+      setTimeout(() => {
+        switch (this.state) {
+          case 'fulfilled':
+            handleExecutor(onfulfilled, this.value)
 
+            break
+
+          case 'rejected':
+            handleExecutor(onrejected, this.value)
+
+            break
+
+          default:
+            // 加入队列
+            this.callBacks.push({
+              fulfilled: value => handleExecutor(onfulfilled, value),
+              rejected: value => handleExecutor(onrejected, value)
+            })
+        }
+      }, 0)
+    }
+
+    // 重新创建一个 Promise，每个then链路都等待上一个状态的变更之后才执行。
+    return new CustomPromise((resolve, reject) =>
+      wrapper((callBack, value) => {
         try {
-            executor(value => updateStateCallback('fulfilled', value), reject);
+          const result = callBack(value) // onrejected 如果不传递将会被 throw
+
+          // 处理返回 Promise 类型
+          if (result instanceof CustomPromise) {
+            result.then(resolve, reject)
+          } else {
+            resolve(result)
+          }
         } catch (e) {
-            reject(e);
+          reject(e)
         }
-    }
+      })
+    )
+  }
 
+  /**
+   *
+   * 捕获错误, 需要等待前面的链路执行完成
+   * */
+  catch(rejected) {
+    return this.then(undefined, rejected)
+  }
 
-    // 链路
-    then(onfulfilled, onrejected) {
-        const wrapper = (handleExecutor) => {
+  finally(callBack) {
+    return this.then(
+      value => {
+        callBack()
+        return value
+      },
+      error => {
+        callBack()
+        return error
+      }
+    )
+  }
 
-            onfulfilled = typeof onfulfilled === 'function' ? onfulfilled : result => result;
+  static reject(value) {
+    return new CustomPromise((resolve, reject) => reject(value))
+  }
 
-            onrejected = typeof onrejected === 'function' ? onrejected : error => {
-                /**
-                 *
-                 * 这里 throw 的原因是模拟 Promise.then不传递第二参数的效果。将会在链路的下一个 catch 阶段被捕获（前提是有调用catch，并且在catch之前不会有其他的then 第二参数参与捕获错误）。
-                 *
-                 * */
-                throw error;
-            };
+  static resolve(value) {
+    return new CustomPromise(resolve => resolve(value))
+  }
 
-            setTimeout(() => {
-                switch (this.state) {
-                  case 'fulfilled':
-                    handleExecutor(onfulfilled, this.value);
+  static all(promises) {
+    return new CustomPromise((resolve, reject) => {
+      const results = []
 
-                    break;
+      let count = 0
 
-                  case 'rejected':
-                    handleExecutor(onrejected, this.value);
+      promises.forEach((promise, index) => {
+        // 判断是否 Promise
+        if (promise instanceof CustomPromise) {
+          promise.then(res => {
+            results[index] = res
 
-                    break;
+            count++
 
-                  default:
-                    // 加入队列
-                    this.callBacks.push({
-                      fulfilled: value => handleExecutor(onfulfilled, value),
-                      rejected: value => handleExecutor(onrejected, value)
-                    });
-
-                }
-            }, 0);
-        }
-
-        // 重新创建一个 Promise，每个then链路都等待上一个状态的变更之后才执行。
-        return new CustomPromise((resolve, reject) => wrapper((callBack, value) => {
-            try {
-                const result = callBack(value); // onrejected 如果不传递将会被 throw
-
-                // 处理返回 Promise 类型
-                if (result instanceof CustomPromise) {
-                    result.then(resolve, reject);
-                } else {
-                    resolve(result);
-                }
-            } catch (e) {
-                reject(e);
+            if (count === promises.length) {
+              resolve(results)
             }
-        }));
-    }
+          }, reject)
+        } else {
+          count++
 
-    /**
-     *
-     * 捕获错误, 需要等待前面的链路执行完成
-     * */
-    catch(rejected) {
-        return this.then(undefined, rejected);
-    }
+          // 否则返回自身
+          results[index] = promise
+        }
+      })
+    })
+  }
 
-    finally(callBack) {
-        return this.then(
-            value => {
-                callBack()
-                return value
-            },
-            error => {
-                callBack()
-                return error
-            });
-    }
-
-    static reject(value) {
-        return new CustomPromise((resolve, reject) => reject(value));
-    }
-
-    static resolve(value) {
-        return new CustomPromise(resolve => resolve(value));
-    }
-
-    static all(promises) {
-        return new CustomPromise((resolve, reject) => {
-            const results = [];
-
-            let count = 0;
-
-            promises.forEach((promise, index) => {
-
-                // 判断是否 Promise
-                if (promise instanceof CustomPromise) {
-                    promise.then(res => {
-                        results[index] = res;
-
-                        count++;
-
-                        if (count === promises.length) {
-                            resolve(results);
-                        }
-
-                    }, reject);
-                } else {
-                    count++;
-
-                    // 否则返回自身
-                    results[index] = promise;
-                }
-            });
-        });
-    }
-
-    static race(promises) {
-        return new CustomPromise((resolve, reject) => {
-            promises.forEach(promise => {
-                if (promise instanceof CustomPromise) {
-                    promise.then(resolve, reject);
-                } else {
-                    resolve(promise);
-                }
-            });
-        });
-    }
+  static race(promises) {
+    return new CustomPromise((resolve, reject) => {
+      promises.forEach(promise => {
+        if (promise instanceof CustomPromise) {
+          promise.then(resolve, reject)
+        } else {
+          resolve(promise)
+        }
+      })
+    })
+  }
 }
-
 
 /**
  * 定义状态
@@ -219,3 +209,47 @@ let id = 0
  *
  * */
 
+new CustomPromise((resolve, reject) => {
+  console.log(resolve, reject)
+})
+  .then(res => {
+    console.log(res)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+  .finally(() => {
+    console.log('finally')
+  })
+
+CustomPromise.race([
+  new CustomPromise(resolve => {
+    setTimeout(() => {
+      resolve(1)
+    }, 3000)
+  }),
+  new CustomPromise(resolve => {
+    setTimeout(() => {
+      resolve(2)
+    }, 5000)
+  })
+])
+
+CustomPromise.all([
+  new CustomPromise(resolve => {
+    setTimeout(() => {
+      resolve(1)
+    }, 3000)
+  }),
+  new CustomPromise(resolve => {
+    setTimeout(() => {
+      resolve(2)
+    }, 5000)
+  })
+]).then(() => {
+  return CustomPromise.reject(222)
+})
+
+CustomPromise.resolve(2).then(res => {
+  console.log(res)
+})
