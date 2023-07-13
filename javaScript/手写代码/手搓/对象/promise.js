@@ -6,7 +6,7 @@
  * @typedef { (resolve: (value: any) => void, reject: (value: any) => void) => void } Executor
  * */
 
-class CustomPromise {
+class $Promise {
   /**
    *
    * @param {Executor} executor
@@ -113,13 +113,13 @@ class CustomPromise {
     }
 
     // 重新创建一个 Promise，每个then链路都等待上一个状态的变更之后才执行。
-    return new CustomPromise((resolve, reject) =>
+    return new $Promise((resolve, reject) =>
       wrapper((callBack, value) => {
         try {
           const result = callBack(value) // onrejected 如果不传递将会被 throw
 
           // 处理返回 Promise 类型
-          if (result instanceof CustomPromise) {
+          if (result instanceof $Promise) {
             result.then(resolve, reject)
           } else {
             resolve(result)
@@ -165,11 +165,11 @@ class CustomPromise {
   }
 
   static reject(value) {
-    return new CustomPromise((resolve, reject) => reject(value))
+    return new $Promise((resolve, reject) => reject(value))
   }
 
   static resolve(value) {
-    return new CustomPromise(resolve => resolve(value))
+    return new $Promise(resolve => resolve(value))
   }
 
   /**
@@ -180,14 +180,14 @@ class CustomPromise {
    *
    * */
   static all(promises) {
-    return new CustomPromise((resolve, reject) => {
+    return new $Promise((resolve, reject) => {
       const results = []
 
       let count = 0
 
       promises.forEach((promise, index) => {
         // 判断是否 Promise
-        if (promise instanceof CustomPromise) {
+        if (promise instanceof $Promise) {
           promise.then(res => {
             results[index] = res
 
@@ -217,9 +217,9 @@ class CustomPromise {
    *
    * */
   static race(promises) {
-    return new CustomPromise((resolve, reject) => {
+    return new $Promise((resolve, reject) => {
       promises.forEach(promise => {
-        if (promise instanceof CustomPromise) {
+        if (promise instanceof $Promise) {
           promise.then(resolve, reject)
         } else {
           resolve(promise)
@@ -243,7 +243,7 @@ class CustomPromise {
  *
  * */
 
-new CustomPromise((resolve, reject) => {
+new $Promise((resolve, reject) => {
   console.log(resolve, reject)
 })
   .then(res => {
@@ -256,34 +256,39 @@ new CustomPromise((resolve, reject) => {
     console.log('finally')
   })
 
-CustomPromise.race([
-  new CustomPromise(resolve => {
+$Promise.race([
+  new $Promise(resolve => {
     setTimeout(() => {
       resolve(1)
     }, 3000)
   }),
-  new CustomPromise(resolve => {
+  new $Promise(resolve => {
     setTimeout(() => {
       resolve(2)
     }, 5000)
   })
 ])
 
-CustomPromise.all([
-  new CustomPromise(resolve => {
-    setTimeout(() => {
-      resolve(1)
-    }, 3000)
-  }),
-  new CustomPromise(resolve => {
-    setTimeout(() => {
-      resolve(2)
-    }, 5000)
+$Promise
+  .all([
+    new $Promise(resolve => {
+      setTimeout(() => {
+        resolve(1)
+      }, 3000)
+    }),
+    new $Promise(resolve => {
+      setTimeout(() => {
+        resolve(2)
+      }, 5000)
+    })
+  ])
+  .then(() => {
+    return $Promise.reject(222)
   })
-]).then(() => {
-  return CustomPromise.reject(222)
-})
 
-CustomPromise.resolve(2).then(res => {
-  console.log(res)
-})
+$Promise
+  .resolve(333)
+  .then(res => res)
+  .then(res => {
+    console.log(res)
+  })
