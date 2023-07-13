@@ -110,10 +110,6 @@ const s = {
   ]
 }
 
-const str = JSON.stringify(s, null, 1)
-
-const _str = _stringify(s)
-
 console.log('Hello World\r\n\t2021')
-//
-// console.log(typeof _str, _str === str)
+
+console.log(_stringify(s))
