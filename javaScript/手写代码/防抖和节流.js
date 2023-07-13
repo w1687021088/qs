@@ -20,7 +20,7 @@ function debounce(constructor, delay = 300) {
 const data = {
   name: 'data',
   run(id) {
-    console.log(id, this === global)
+    console.log(id, this === (typeof window !== 'undefined' ? window : global))
   }
 }
 
@@ -56,6 +56,6 @@ function throttle(constructor, delay = 300) {
 
 const th = throttle(data.run)
 
-th('id = 5') // 不执行
+th('id = 5') // 执行
 th('id = 6') // 不执行
-th('id = 7') // 执行
+th('id = 7') // 不执行

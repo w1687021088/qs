@@ -22,7 +22,7 @@ data.run.apply(data01, ['p1', 'p2'])
  * */
 
 Function.prototype._apply = function (context, params = []) {
-  context = ((context === undefined || context === null) && window) || Object(context)
+  context = ((context === undefined || context === null) && (typeof window !== 'undefined' ? window : global)) || Object(context)
 
   // 创建一个变量，防止污染源
   const symbol = Symbol()
