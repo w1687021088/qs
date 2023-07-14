@@ -200,7 +200,7 @@ class Com extends React.Component {
 
 ## 更新阶段
 
-更新阶段, React class 组件的更新只有通过状态 `this.setState` 的变更才会触发 React 执行`更新阶段`, 包括 `props` 的变更， 原则上 `props`。
+React class 组件的更新只有通过状态 `this.setState` 的变更才会触发 React 执行`更新阶段`, 包括 `props` 的变更， 原则上 `props`。
 
 ### `更新阶段` 1. `getDerivedStateFromProps`
 
@@ -282,7 +282,7 @@ class Child extends React.Component {
 ```
 ### 更新阶段 3. `render`
 
-### 更新阶段 4. `componentWillMount`
+### 更新阶段 4. `componentWillUnMount`
 
 ### 更新阶段 5. `componentDidUpdate`
 
