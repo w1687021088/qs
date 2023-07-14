@@ -35,6 +35,8 @@ class Com extends React.Component {
 
 ### `static getDerivedStateFromProps`
 
+从props派生状态，挂载阶段执行一次，每次更新都在执行。
+
 接收两个参数，一个是当前阶段的 `props` 另外一个是当前阶段的 `state`，用于修改组件的状态，如果无须修改返回 `null`。
 
 ```tsx
@@ -58,6 +60,104 @@ class Com extends React.Component {
    // ... 
 
    // render() { ...
+}
+```
+
+### `componentWillMount`
+
+挂载阶段，初始化执行一次。
+
+注意⚠️： 该API 已在React v17.0开始删除。
+
+在这一阶段内设置的状态不会触发组件 `render` 的行为。因为这一阶段是在 `render` 之前触发，不可能会做重新更新的操作。
+
+```tsx
+
+
+class Com extends React.Component {
+
+  // ... 
+
+  componentWillMount() {
+    console.log('componentWillMount')
+    
+    // 在这里调用 setState 方法， 不会触发额外渲染
+    // ...
+  }
+
+   // ... 
+
+   // render() { ...
+}
+```
+
+
+### `render`
+
+`render()` 方法是唯一必须的钩子函数，它在 `getDerivedStateFromProps` 阶段之后调用，用来更新屏幕视图的UI。
+
+注意⚠️：不要在 render() 方法中改变 state，否则会陷入死循环，导致程序崩溃。
+
+```tsx
+
+
+class Com extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    
+    
+    this.state = {
+      name: 'render'
+    }
+
+  }
+
+  render() {
+    const { name } = this.state
+    
+    
+    // 不要在这里修改 state 或调用 state
+    return <div>{name}</div> // name: render
+  }
+}
+```
+
+如果添加`getDerivedStateFromProps`阶段,挂载阶段时期，`render` 调用之前当前的状态已被`getDerivedStateFromProps`阶段变更。
+
+```tsx
+
+
+class Com extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    
+    
+    this.state = {
+      name: 'render'
+    }
+
+  }
+  
+  static getDerivedStateFromProps(props, state) {
+    if (props.count > 0) {
+      return {
+        ...state,
+        name: props.name // 'www'
+      }
+    }
+    
+    return null
+  }
+
+  render() {
+    const { name } = this.state
+    
+    
+    // 不要在这里修改 state 或调用 state
+    return <div>{name}</div> // name: www
+  }
 }
 ```
 
