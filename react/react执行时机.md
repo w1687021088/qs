@@ -5,8 +5,9 @@
 
 ## 挂载阶段
 
-### `constructor`
+### 挂载阶段 1.`constructor`
 
+挂载组件前，第一个执行，组件生命周期阶段只执行一次。
 
 执行`构造函数`将创建组件时期调用，用于创建组件的状态`state`以及接收上层传递的属性`props`。
 
@@ -33,9 +34,9 @@ class Com extends React.Component {
 }
 ```
 
-### `static getDerivedStateFromProps`
+### 挂载阶段 2.`static getDerivedStateFromProps`
 
-从props派生状态，挂载阶段执行一次，每次更新都在执行。
+从`props`派生`state`，挂载阶段执行一次，每次更新都在执行。
 
 接收两个参数，一个是当前阶段的 `props` 另外一个是当前阶段的 `state`，用于修改组件的状态，如果无须修改返回 `null`。
 
@@ -63,9 +64,9 @@ class Com extends React.Component {
 }
 ```
 
-### `componentWillMount`
+### 挂载阶段 3.`componentWillMount`
 
-挂载阶段，初始化执行一次。
+组件将要挂载阶段，组件生命周期阶段只执行一次。
 
 注意⚠️： 该API 已在React v17.0开始删除。
 
@@ -92,7 +93,9 @@ class Com extends React.Component {
 ```
 
 
-### `render`
+### 挂载阶段 4.`render`
+
+挂载阶段执行一次，每次重新渲染组件都会执行。
 
 `render()` 方法是唯一必须的钩子函数，它在 `getDerivedStateFromProps` 阶段之后调用，用来更新屏幕视图的UI。
 
@@ -160,6 +163,41 @@ class Com extends React.Component {
   }
 }
 ```
+
+### 挂载阶段 5.`componentDidMount`
+
+组件已挂载阶段，组件生命周期阶段只执行一次。
+
+`render` 执行结束，组件被挂载后调用。这里可以用来操作副作用或者其他的诸如数据获取、DOM操作等等。
+
+
+```tsx
+
+
+class Com extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    
+    
+    this.state = {
+      name: 'render'
+    }
+
+  }
+  
+  componentDidMount() {
+    // 操作诸如数据获取、DOM操作等等。
+  }
+
+  // render() { ...render
+}
+```
+
+除了一些副作用的等等操作外， 也可以立即调用 `this.setState` 方法；但这将导致`重新渲染`，因为它启动了`更新阶段`，因为状态已经改变。
+
+所以，需要小心使用 `componentDidMount`，因为它可能导致不必要的`重新渲染`。
+
 
 ## 更新阶段
 
