@@ -196,7 +196,7 @@ class Com extends React.Component {
 
 除了一些副作用的等等操作外， 也可以立即调用 `this.setState` 方法；但这将导致`重新渲染`，因为它启动了`更新阶段`，因为状态已经改变。
 
-所以，需要小心使用 `componentDidMount`，因为它可能导致不必要的`重新渲染`。
+在使用 `componentDidMount`阶段时，需要权衡下是否需要在该阶段内调用 `setState`操作状态，因为它可能导致不必要的`重新渲染`。
 
 
 ## 更新阶段
