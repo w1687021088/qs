@@ -217,7 +217,7 @@ class Com extends React.Component {
 
 ```tsx
 
-class Prent extends React.Component {
+class Child extends React.Component {
   constructor() {
     this.state = {
       count: 0,
@@ -227,22 +227,22 @@ class Prent extends React.Component {
 
 
   render() {
-    const { count, visible } = this.state
+    const {count, visible} = this.state
     return (
       <>
         <Button onClick={() => {
-          
+
           this.setState(state => {
             return {
               ...state,
               visible: !state.visible
             }
           })
-          
+
         }}>操作count状态</Button>
-        
+
         {visible && <p>显示 p 标签</p>}
-        
+
         <Button onClick={() => {
           this.setState(state => {
             return {
@@ -251,16 +251,38 @@ class Prent extends React.Component {
             }
           })
         }}>操作count状态</Button>
-        
-        <Child count={count} />
+
+        <Child count={count}/>
       </>
     )
   }
 }
+
+class Child extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
+  // 是否更新组件
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    
+    return true
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.count}
+      </div>
+    )
+  }
+}
 ```
+### 更新阶段 3. `render`
 
+### 更新阶段 4. `componentWillMount`
 
-### 更新阶段 2. `componentDidUpdate`
+### 更新阶段 5. `componentDidUpdate`
 
 ```tsx
 
@@ -273,6 +295,7 @@ class Prent extends React.Component<any, {count: number}> {
       count: 0
     }
   }
+  
   
   static getSnapshotBeforeUpdate(prevProps: any, prevState: Readonly<{ count: number }>): any {
   }
