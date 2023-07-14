@@ -5,7 +5,7 @@
 
 ## 挂载阶段
 
-### 挂载阶段 1.`constructor`
+### `挂载阶段` 1.`constructor`
 
 挂载组件前，第一个执行的函数，组件生命周期阶段只执行一次。
 
@@ -93,13 +93,13 @@ class Com extends React.Component {
 ```
 
 
-### 挂载阶段 4.`render`
+### `挂载阶段` 4.`render`
 
-挂载阶段执行一次，每次重新渲染组件都会执行。
+`挂载阶段`执行一次，每次重新渲染组件都会执行。
 
 `render()` 方法是唯一必须的钩子函数，它在 `getDerivedStateFromProps` 阶段之后调用，用来更新屏幕视图的UI。
 
-注意⚠️：不要在 render() 方法中改变 state，否则会陷入死循环，导致程序崩溃。
+注意⚠️：不要在 `render()` 方法中改变 `state`，否则会陷入死循环，导致程序崩溃。
 
 ```tsx
 
@@ -200,20 +200,22 @@ class Com extends React.Component {
 
 ## 更新阶段
 
-更新阶段, React class 组件的更新只有通过状态 `this.setState` 的变更才会触发 React 执行更新阶段, 包括 `props` 的变更， 原则上 `props`。
+更新阶段, React class 组件的更新只有通过状态 `this.setState` 的变更才会触发 React 执行`更新阶段`, 包括 `props` 的变更， 原则上 `props`。
 
-### 更新阶段 1. `getDerivedStateFromProps`
+### `更新阶段` 1. `getDerivedStateFromProps`
 
 `getDerivedStateFromProps` 函数将是更新阶段内第一个执行的函数，与挂载阶段相同。
 
 但是尽量不要在这一阶段内执行副作用，可能会造成页面卡顿或者不流畅的bug，因为该函数每次都会在组件更新的阶段执行。
 
 
-### 更新阶段 2. `shouldComponentUpdate`
+### `更新阶段` 2. `shouldComponentUpdate`
 
 性能优化组件，源于React的设计理念，状态一旦变更时将会触发组件重新渲染。
 
-有时不想让当前组件的状态不影响到子组件的更新可以使用该函数在更新自身状态是设置。
+接收两个参数，`nextProps`即将更新的`props`, `nextState`即将变更的`state`。
+
+如果无须更新返回 `false`， 否则返回 `true`。
 
 ```tsx
 
