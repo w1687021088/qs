@@ -4,24 +4,29 @@
  *
  * js中将执行函数的指向更改为传入的对象。
  *
+ * 思路：
+ *    通过Function.prototype 原型创建的方法，其内部的this为调用该者（函数）的本身。
+ *    对象下的方法，其this默认指向这个对象。
+ *
  * */
 
 Function.prototype._call = function (context, ...args) {
+  // 第一： 防止指向错误，添加默认值,并包裹对象
   context = ((context === undefined || context === null) && (typeof window !== 'undefined' ? window : global)) || Object(context)
 
-  // 创建一个Symbol变量，防止属性重复
+  // 第二： 创建一个Symbol变量，防止属性重复
   const symbol = Symbol()
 
-  // 将函数指向这个symbol变量
-  context[symbol] = this
+  // 第三： 将调用者赋值给到这个新指向（对象）。
+  context[symbol] = this // this = 调用者本身（函数）
 
-  // 指向该函数
+  // 第四： 指向该函数。
   const result = context[symbol](...args)
 
-  // 完成后删除
+  // 第五： 完成后删除
   delete context[symbol]
 
-  // 返回执行结果
+  // 第六： 返回执行结果
   return result
 }
 
