@@ -381,9 +381,118 @@ class Com extends React.Component {
 
 组件被卸载时调用，可以用于清除定时器、取消网络请求等操作。一旦这个方法执行完毕，该组件将被销毁。
 
----
+
 
 # `hooks` 时代下 component “生命周期”
 
+严格来说，React 的生命周期在类组件和函数组件中是不同的概念.
 
-https://juejin.cn/post/7218942994467389498#heading-8
+![img.png](../image/hooks-maps.png)
+
+## 类似挂载阶段
+
+###  1. `render`
+###  2. React 第一次渲染。
+###  3. React 更新 `DOM`
+###  4. 运行 `LayoutEffects`
+###  5. 浏览器屏幕绘制。
+###  6. 运行 `Effects`。
+
+## 类似更新阶段
+
+更新阶段 与 挂载阶段 做的事情基本一直，挂载和更新之间的主要区别是：
+-  `惰性初始化`仅在挂载时
+-  挂载阶段不存在`清理工作`
+
+
+###  1. `render`
+ `props` 或者 `state` 变化，触发重新渲染 `render`。
+
+###  2. React 更新 `DOM`
+
+diff过程更新`DOM`。
+
+###  3. 清除 `LayoutEffects`， 并运行`LayoutEffects`。
+
+先清理，在运行`LayoutEffects`。
+
+```tsx
+
+
+function Dome() {
+   useLayoutEffect(() => {
+      // ... 
+      并运行`Effects`
+      // ... 
+      return () => {
+         // 清理 `Effects`
+      }
+   }, [// ...deps])
+}
+
+```
+
+在渲染之后，React 清理了 `LayoutEffects`，使其紧接着运行。浏览器然后绘制屏幕，之后React清理 Effects 并紧接着运行它。
+
+###  4. `浏览器绘制屏幕`
+重新渲染屏幕的浏览器操作。
+
+###  5. 清理 `Effects`， 并运行`Effects`。
+
+先清理，在运行`Effects`。
+
+```tsx
+
+
+function Dome() {
+   useEffect(() => {
+      // ... 
+      并运行`Effects`
+      // ... 
+      return () => {
+         // 清理 `Effects`
+      }
+   }, [// ...deps])
+}
+
+```
+
+
+
+## 类似卸载阶段
+
+在卸载期间，React 清理所有效果
+
+### 清理 1. `LayoutEffects`
+
+清除`LayoutEffects`操作，执行。
+
+```tsx
+
+
+function Dome() {
+   useLayoutEffect(() => {
+     return () => {
+       // 清理
+     }
+   }, [])
+}
+
+```
+
+### 清理 2. `Effects`
+
+在函数组件卸载阶段最后一个执行的操作，清除`Effects`函数钩子。
+
+```tsx
+
+
+function Dome() {
+   useEffect(() => {
+      return () => {
+         // 清理
+      }
+   }, [])
+}
+
+```
