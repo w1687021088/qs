@@ -1,5 +1,20 @@
 # `class` 时代下 component 生命周期
 
+1. 组件挂载阶段
+    - `constructor`
+    - `getDeriveStateFromProps`
+    - ~~`componentWillMount`~~ - **API已删除**
+    - `render`
+    - `componentDidMount`
+2. 组件更新阶段
+    - `getDeriveStateFromProps`
+    - `shouldComponentUpdate`
+    - `render`
+    - `getSnapshotBeforeUpdate`
+    - `componentDidUpdate`
+3. 组件卸载阶段
+    - `componentWillUnmount`
+
 
 ![img.png](../image/react-class-component-maps.png)
 
