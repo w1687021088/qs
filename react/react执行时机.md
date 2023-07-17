@@ -282,9 +282,38 @@ class Child extends React.Component {
 ```
 ### 更新阶段 3. `render`
 
-### 更新阶段 4. `componentWillUnMount`
+`render() `方法会根据 最新的`props`和`state` 来`重新渲染`组件的UI
+
+### 更新阶段 4. `getSnapshotBeforeUpdate`
+
+在组件更新之前调用，在这一时期可以针对更新之前在做额外的事情。
+
+`prevProps`, `prevState`为更新阶段之前的`props` 和 `state`，同时该钩子函数还支持返回参数。
+
+```tsx
+
+class Prent extends React.Component {
+  constructor(props: any) {
+    super(props);
+
+    this.state = {
+      count: 0
+    }
+  }
+  
+  static getSnapshotBeforeUpdata(preProps, preState) {
+    // 将传递给到 componentDidUpdate 钩子函数的第三个参数。
+    return {
+      count: 30
+    }
+  }
+}
+
+```
 
 ### 更新阶段 5. `componentDidUpdate`
+
+该钩子函数时更新阶段的最后一个钩子函数，接收三个参数`prevProps`, `prevState`为更新阶段之前的`props` 和 `state`，`snapshot`参数为 `getSnapshotBeforeUpdata` 钩子返回参数。
 
 ```tsx
 
@@ -299,7 +328,9 @@ class Prent extends React.Component<any, {count: number}> {
   }
   
   
-  static getSnapshotBeforeUpdate(prevProps: any, prevState: Readonly<{ count: number }>): any {
+  static getSnapshotBeforeUpdate(prevProps: any, prevState: Readonly<{ count: number }>): number {
+    
+    return 10
   }
 
   componentDidUpdate(prevProps: any, prevState: {count: number}, snapshot) {
@@ -316,6 +347,28 @@ class Prent extends React.Component<any, {count: number}> {
 
 ## 卸载阶段
 
+### 卸载阶段 1. `componentWillUnmout`
+
+
+```tsx
+
+class Com extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
+  componentsWillUnmount() {
+    // 执行清除副作用或者其他在组件卸载阶段时需要处理的事情。
+  }
+}
+
+```
+
+组件被卸载时调用，可以用于清除定时器、取消网络请求等操作。一旦这个方法执行完毕，该组件将被销毁。
+
 ---
 
 # `hooks` 时代下 component “生命周期”
+
+
+https://juejin.cn/post/7218942994467389498#heading-8
