@@ -34,6 +34,10 @@ function App() {
 
 然而，有些情况下，我们希望在浏览器绘制之前立即执行副作用函数，以确保对界面的更新可以立即生效。这就是 `useLayoutEffect` 的作用。
 
-`useEffect` 和 `useLayoutEffect` 的区别在于执行时机。`useEffect` 是在组件渲染之后`异步执行`的，不会阻塞页面渲染，而 `useLayoutEffect` 是在组件渲染之后`同步执行`的，会阻塞页面渲染。在大多数情况下，推荐使用 `useEffect`，只有在需要在页面渲染之前同步执行副作用函数时才使用 `useLayoutEffect`
+`useEffect` 和 `useLayoutEffect` 的区别在于执行时机。
+
+`useEffect` 是在组件渲染之后`异步执行`的，不会阻塞页面渲染，而 `useLayoutEffect` 是在组件渲染之后`同步执行`的，会阻塞页面渲染。
+
+在大多数情况下，推荐使用 `useEffect`，只有在需要在页面渲染之前同步执行副作用函数时才使用 `useLayoutEffect`。
 
 
