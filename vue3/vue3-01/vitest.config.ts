@@ -1,12 +1,11 @@
 import { fileURLToPath } from 'node:url'
-// @ts-ignore
 import { mergeConfig } from 'vite'
-// @ts-ignore
 import { configDefaults, defineConfig } from 'vitest/config'
 import viteConfig from './vite.config'
 
 export default mergeConfig(
   viteConfig,
+  // @ts-ignore
   defineConfig({
     test: {
       environment: 'jsdom',
