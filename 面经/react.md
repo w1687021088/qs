@@ -152,3 +152,32 @@ React依赖Hooks的调用顺序来管理组件的状态和副作用。如果在�
 
 ## 16. 什么是高阶组件？
 高阶组件就是一个函数，且该函数接受一个组件作为参数，并返回一个新的组件。基本上，这是从React的组成性质派生的一种模式，我们称它们为“纯”组件， 因为它们可以接受任何动态提供的子组件，但它们不会修改或复制其输入组件的任何行为
+
+## 17.事件循环
+
+微任务
+
+一个需要异步执行的函数，执行时机是在主函数执行结束之后、当前宏任务结束之前
+
+常见的微任务有：
+
+Promise.then
+
+MutaionObserver
+
+Object.observe（已废弃；Proxy 对象替代）
+
+process.nextTick（Node.js）
+
+宏任务
+
+宏任务的时间粒度比较大，执行的时间间隔是不能精确控制的，对一些高实时性的需求就不太符合
+
+常见的宏任务有：
+
+script (可以理解为外层同步代码)
+setTimeout/setInterval
+UI rendering/UI事件
+postMessage、MessageChannel
+setImmediate、I/O（Node.js）
+这时候，事件循环，宏任务，微任务的关系如图所示
