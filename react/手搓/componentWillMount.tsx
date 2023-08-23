@@ -15,14 +15,13 @@ function useComponentWillMountState(callback: () => void) {
     callback?.()
   }
 
-  useEffect(() => setState(false), [state])
+  useEffect(() => setState(true), [state])
 }
 
 /**
  *
  * useRef 版本
  * */
-
 function useComponentWillMountRef(callback: () => void) {
   const ref = useRef(false)
 
