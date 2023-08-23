@@ -24,7 +24,8 @@ Function.prototype._call = function (context, ...args) {
   const result = context[symbol](...args)
 
   // 第五： 完成后删除
-  delete context[symbol]
+  // delete context[symbol]
+  Reflect.deleteProperty(context, symbol)
 
   // 第六： 返回执行结果
   return result

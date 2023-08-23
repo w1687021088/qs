@@ -31,7 +31,7 @@ Function.prototype._apply = function (context, params = []) {
 
   const result = context[symbol](...params)
 
-  delete context[symbol]
+  Reflect.deleteProperty(context, symbol)
 
   return result
 }

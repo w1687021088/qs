@@ -20,16 +20,16 @@
  *  条件3:左侧数据类型如果是基础数据类型，直接返回false。
  *
  * */
-function _instanceof(variable, constructor) {
+function $instanceof(variable, constructor) {
   // 条件1: 右侧是一个构造函数。
-  if (constructor && typeof constructor !== 'function') {
-    throw `
+  if (typeof constructor !== 'function') {
+    throw TypeError(`
     -------------  error  -------------
     +++++++++++++ message +++++++++++++
-    constructor 不是一个构造函数, instanceof 方法中，constructor 必须是一个构造函数
+    constructor ${constructor} 不是一个构造函数, instanceof 方法中，constructor 必须是一个构造函数
     +++++++++++++ message +++++++++++++
     -------------  error  -------------
-    `
+    `)
   }
 
   // 过滤调数据类型不是对象或者函数
@@ -40,7 +40,7 @@ function _instanceof(variable, constructor) {
     // 条件2:被检测的左侧数据类型的原型是否出现在右侧构造函数的原型链上
 
     // 如果当前原型不等与构造函数的原型，则在实例对象的原型链上寻找
-    return proto === constructor.prototype || _instanceof(proto, constructor)
+    return proto === constructor.prototype || $instanceof(proto, constructor)
   }
 
   // 条件3:左侧数据类型如果是基础数据类型，直接返回 false。
@@ -57,9 +57,9 @@ const cart = new Cart()
 
 function run() {
   try {
-    console.log(_instanceof(cart, Object))
+    console.log($instanceof(cart, Cart))
 
-    console.log(cart instanceof Object)
+    console.log(cart instanceof Cart)
   } catch (e) {
     console.log(e)
   }
