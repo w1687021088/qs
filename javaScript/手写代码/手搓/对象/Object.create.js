@@ -18,14 +18,14 @@
  *
  * */
 function _create(object) {
-  if (typeof object === 'object' || typeof object === 'function') {
-    const data = {}
-
-    Reflect.setPrototypeOf(data, object)
-
-    return data
+  if (typeof object !== 'object' && typeof object !== 'function') {
+    throw TypeError('Object prototype may only be an Object or null: ' + object)
   }
-  throw 'Object prototype may only be an Object or null: ' + object
+  const data = {}
+
+  Reflect.setPrototypeOf(data, object)
+
+  return data
 }
 
 const data = {
