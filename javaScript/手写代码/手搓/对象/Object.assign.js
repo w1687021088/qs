@@ -25,11 +25,7 @@ function _assign(target, ...sources) {
     return target
   }
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    if (sources.length <= 0) {
-      return target
-    }
+  while (sources.length) {
     const data = sources[0]
 
     for (const key in data) {
@@ -43,6 +39,8 @@ function _assign(target, ...sources) {
 
     sources.splice(0, 1)
   }
+
+  return target
 }
 
 const obj1 = { a: 1 },
