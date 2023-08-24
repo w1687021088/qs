@@ -10,7 +10,7 @@
  *
  * */
 
-Function.prototype._call = function (context, ...args) {
+Function.prototype._call = function (context, args) {
   // 第一： 防止指向错误，添加默认值,并包裹对象
   context = ((context === undefined || context === null) && (typeof window !== 'undefined' ? window : global)) || Object(context)
 
