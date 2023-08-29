@@ -15,16 +15,13 @@ Array.prototype._map = function (callback, thisArg) {
   const source = Object(this)
 
   // eslint-disable-next-line no-constant-condition
-  while (true) {
-    if (index > this.length) {
-      return list
-    }
-
+  while (index <= this.length) {
     if (index in source) {
       list.push(callback.call(thisArg, source[index], index, source))
     }
     index++
   }
+  return list
 }
 
 console.log(
