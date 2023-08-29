@@ -59,7 +59,7 @@ Http 和 WebSocket、Socket 相比，Http 协议更为常用和简单，但它�
 ----
 
 
-WebSocket 是基于 TCP/IP 连接进行的`双向通信协议`，并复用HTTP的握手通道建立连接，使客户端与服务器实现双向数据通信。
+WebSocket 是基于 TCP/IP 连接进行的`双向通信协议`，并复用HTTP的握手通道建立连接，使客户端与服务器实现双向通信。
 
 webSocket 的连接过程是：
 
