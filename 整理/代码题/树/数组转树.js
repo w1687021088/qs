@@ -8,7 +8,7 @@
  * @param list {Array<Item>} 列表
  * @param pid {number | null} pid
  *
- * 时间复杂度：O(1)
+ * 时间复杂度：O(n)
  *
  * 利用js复杂数据类型的引用地址赋值的特性来改变数组的子集
  * */
@@ -19,22 +19,40 @@ const conversionTree = (list, pid) => {
   // 创建一个对象来临时存储
   const data = {}
 
+  // 先找到第一层
+  const s = new Set()
+
+  const firstPids = new Set()
+
+  for (let i = 0; i < list.length; i++) {
+    s.add(list[i].id)
+  }
+
+  for (let i = 0; i < list.length; i++) {
+    if (!s.has(list[i].pid)) {
+      firstPids.add(list[i].pid)
+    }
+  }
+
   // 遍历数组
   for (let i = 0; i < list.length; i++) {
-    const item = list[i],
-      itemPid = item.pid
+    const item = list[i]
+
+    const itemPid = item.pid
+
+    const itemId = item.id
 
     // 将id 作为 data 的 key 值，存储 item
-    data[item.id] = data[item.id] ? { ...data[item.id], ...item } : item
+    data[itemId] = data[itemId] ? { ...data[itemId], ...item } : item
 
-    if (itemPid === pid) {
-      newList.push(data[item.id])
+    if (firstPids.has(itemPid)) {
+      newList.push(data[itemId])
     } else {
       data[itemPid] = data[itemPid] || {}
 
       data[itemPid].children = data[itemPid].children || []
 
-      data[itemPid].children.push(data[item.id])
+      data[itemPid].children.push(data[itemId])
     }
   }
 
