@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<button id="begin">开始</button>
+<button id="interaction">添加交互任务</button>
+
+<body>
+<script>
+    const beginDOM = document.querySelector("#begin");
+    const interactionDOM = document.querySelector("#interaction");
+    // delay函数 传入一个时间，使用循环，阻塞主线程的运行，方便我们后续的操作
+    function delay_thread(duration) {
+        const now = Date.now();
+        while (Date.now() - now < duration) { }
+    }
+
+
+
+    beginDOM.onclick = function () {
+        interactionDOM.onclick = function () {
+            console.log('交互队列执行');
+        }
+
+        delay_thread(2000)
+
+        setTimeout(() => {
+            console.log('延时队列执行');
+
+            delay_thread(2000)
+        }, 2000)
+
+
+        console.log('1');
+
+        // delay_thread(2000)
+
+
+    }
+
+</script>
+</body>
+</html>

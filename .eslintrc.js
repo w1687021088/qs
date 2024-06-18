@@ -44,7 +44,7 @@ module.exports = {
     /**
      * 变量声明
      */
-    'init-declarations': ['error', 'always'], // 声明变量必须赋值
+    'init-declarations': 0, // 声明变量必须赋值
     /**
      * 风格指南
      */
@@ -69,10 +69,10 @@ module.exports = {
      * ECMAScript6
      */
     'arrow-spacing': ['error', { before: true, after: true }], // 强制箭头函数的箭头前后使用空格
-    'no-var': 2, // 禁止使用 var 声明变量
+    'no-var': 0, // 禁止使用 var 声明变量
     'object-shorthand': 2, // 要求使用对象方法名和属性名简写
     'prefer-arrow-callback': 2, // 要求回调函数使用箭头函数
-    'prefer-const': 2, // 使用 const 声明那些声明后不再被修改的变量
+    'prefer-const': 0, // 使用 const 声明那些声明后不再被修改的变量
     'prefer-rest-params': 2, // 要求使用剩余参数而不是 arguments
     '@typescript-eslint/member-delimiter-style': [
       2,
