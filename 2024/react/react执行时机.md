@@ -16,7 +16,7 @@
     - `componentWillUnmount`
 
 
-![img.png](../image/react-class-component-maps.png)
+![img.png](../../image/react-class-component-maps.png)
 
 ## 挂载阶段
 
@@ -387,7 +387,7 @@ class Com extends React.Component {
 
 严格来说，React 的生命周期在类组件和函数组件中是不同的概念.
 
-![img.png](../image/hooks-maps.png)
+![img.png](../../image/hooks-maps.png)
 
 ## 类似挂载阶段
 

@@ -1,46 +1,54 @@
-function formatNumber(num, digit = 10) {
-
-    const isNegative = num < 0
-
-    num = Math.abs(num).toString()
-
-    const [strInteger,part] = num.split('.')
-
-
-
-    const _nums = []
-
-    if (digit > strInteger.length) {
-        digit = strInteger.length
+const data = {
+  value: 3,
+  next: {
+    value: 1,
+    next: {
+      value: 7,
+      next: {
+        value: 0,
+        next: {
+          value: 2,
+          next: {
+            value: 8,
+            next: {
+              value: 6,
+              next: {
+                value: 4,
+                next: {
+                  value: 5
+                }
+              }
+            }
+          }
+        }
+      }
     }
-
-
-    const first = strInteger.length % digit
-
-    if (first) {
-        _nums.push(strInteger.slice(0, first))
-    }
-
-    for (let i = first; i < strInteger.length; i += digit) {
-        _nums.push(strInteger.slice(i, i + digit))
-    }
-
-    return (isNegative && '-' + _nums.join(',')) + (part && '.' + part || '')
+  }
 }
 
-function formatNumberWithRegex(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+/**  @typedef {{ value: number; next?: DataNode }} DataNode */
+
+/**
+ * @param data {DataNode}
+ *
+ * @return {{ value: number}[]}
+ * */
+function flat(data) {
+  /** @type {{ value: number}[]} */
+  const list = []
+
+  /** @type {DataNode[]} */
+  const stack = [data]
+
+  while (stack.length) {
+    const item = stack.shift()
+
+    list.push({ value: item.value })
+
+    item.next && stack.push(item.next)
+  }
+
+  return list
 }
 
-
-// o(n - (n % d) / d)
-
-
-console.log(formatNumber(-12400600, 3));
-// console.log(formatNumberWithRegex(-5112400600.89));
-
-
-
-
-
-
+console.log(flat(data))
