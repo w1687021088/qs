@@ -5,41 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<button id="begin">开始</button>
-<button id="interaction">添加交互任务</button>
+<button id="interaction">开始</button>
+<button id="btn">按钮</button>
 
+<div id="text"></div>
+<div id="btn-text">null</div>
 <body>
 <script>
-    const beginDOM = document.querySelector("#begin");
-    const interactionDOM = document.querySelector("#interaction");
-    // delay函数 传入一个时间，使用循环，阻塞主线程的运行，方便我们后续的操作
-    function delay_thread(duration) {
-        const now = Date.now();
-        while (Date.now() - now < duration) { }
-    }
 
+const interactionDOM = document.getElementById('interaction')
 
+const textDOM = document.getElementById('text')
 
-    beginDOM.onclick = function () {
-        interactionDOM.onclick = function () {
-            console.log('交互队列执行');
+const btnDOM = document.getElementById('btn')
+
+const btnTextDOM = document.getElementById('btn-text')
+
+let btnCount = 0
+
+btnDOM.onclick = function () {
+    btnCount++
+    btnTextDOM.innerText = 'count: ' + btnCount
+}
+
+const data = Array.from({length: 1000000}, (_, ide) => ide + 1)
+
+function processChunk(chunk) {
+    return `chunk: ${chunk}`; // .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+let start = 0
+
+/** ================================= 核心逻辑 ============================================ */
+// 每一帧数量
+
+// 初始化分片数量
+let sliceSize = 1000
+
+let index = 0
+
+function run() {
+    const startTime = performance.now()
+
+    for (let i = 0 ; i < sliceSize; i++) {
+        if (index < data.length) {
+            textDOM.innerText = processChunk(data[index])
+            index++
+        } else {
+            break
         }
-
-        delay_thread(2000)
-
-        setTimeout(() => {
-            console.log('延时队列执行');
-
-            delay_thread(2000)
-        }, 2000)
-
-
-        console.log('1');
-
-        // delay_thread(2000)
-
-
     }
+
+    if (index < data.length) {
+        window.requestAnimationFrame(run)
+    } else {
+
+
+        alert(performance.now() - start);
+    }
+
+    const endTime = performance.now() - startTime
+
+    if (endTime > 16) {
+        sliceSize = Math.floor(sliceSize * 0.9)
+    } else if (endTime < 16) {
+        sliceSize = Math.floor(sliceSize * 1.1)
+    }
+
+    console.log(sliceSize, endTime);
+}
+
+
+interactionDOM.onclick = function () {
+    start = performance.now()
+
+    window.requestAnimationFrame(run)
+}
+
 
 </script>
 </body>
