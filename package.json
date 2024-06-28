@@ -26,6 +26,7 @@
   "dependencies": {
     "p-limit": "^5.0.0",
     "ts-node": "^10.9.2",
+    "vue": "^3.4.31",
     "yocto-queue": "^1.0.0"
   }
 }
