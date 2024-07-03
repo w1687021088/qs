@@ -3,7 +3,7 @@ import { inject, type InjectionKey, onUnmounted, provide, ref } from 'vue'
 type BusEvent = {
   message: (id: string) => void
   count: (num: number, str: string, bool: boolean) => void
-  open: () => void
+  open(): void
 }
 
 type BusEventName = keyof BusEvent
@@ -34,6 +34,7 @@ export function useEventBus() {
 
   // 派发
   provide(EventBusDispatch, (eventName, ...args) => {
+    // @ts-ignore
     for (const [name, handle] of stack.value) {
       if (name.split('-')[0] === eventName) {
         ;(handle as any)?.(...args)
