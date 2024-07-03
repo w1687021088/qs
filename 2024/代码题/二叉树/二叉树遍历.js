@@ -6,45 +6,13 @@ const treeNode = {
   val: 1,
   left: {
     val: 2,
-    left: {
-      val: 4,
-      left: {
-        val: 0,
-        left: null,
-        right: null
-      },
-      right: null
-    },
-    right: {
-      val: 5,
-      left: null,
-      right: null
-    }
+    left: {val: 4},
+    right: {val: 5}
   },
   right: {
     val: 3,
-    left: {
-      val: 6,
-      left: null,
-      right: null
-    },
-    right: {
-      val: 7,
-      left: null,
-      right: {
-        val: 8,
-        left: {
-          val: 10,
-          left: null,
-          right: null
-        },
-        right: {
-          val: 9,
-          left: null,
-          right: null
-        }
-      }
-    }
+    left: {val: 6},
+    right: {val: 7}
   }
 }
 
@@ -74,7 +42,7 @@ console.log(
 
     return result
   })(treeNode)
-) // [1, 2, 4, 0, 5, 3, 6, 7, 8, 10, 9]
+) // [1, 2, 4, 5, 3, 6, 7]
 
 /**
  * 其遍历顺序是从左子树开始，再访问上节点，最后访问右子树
@@ -102,7 +70,7 @@ console.log(
     }
     return res
   })(treeNode)
-) // [0, 4, 2, 5, 1, 6, 3, 7, 10, 8, 9]
+) // [4, 2, 5, 1, 6, 3, 7]
 
 /**
  * 先深入左树节点-再深入右树节点-上节点
@@ -125,4 +93,4 @@ console.log(
 
     return result
   })(treeNode)
-) // [0, 4, 5, 2, 6, 10 9, 8, 7, 3, 1]
+) // [4,5,2,6,7,3,1]
